@@ -1,0 +1,210 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User account profile and role linkage",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 255 },
+        "displayName": { "type": "string", "maxLength": 150 },
+        "role": { "type": "string", "enum": ["admin", "faculty", "student"] },
+        "studentId": { "type": "string", "maxLength": 128 },
+        "facultyId": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Student": {
+      "title": "Student",
+      "description": "Enrolled student record in the college",
+      "type": "object",
+      "properties": {
+        "studentId": { "type": "string", "maxLength": 128 },
+        "registerNumber": { "type": "string", "maxLength": 50 },
+        "name": { "type": "string", "maxLength": 150 },
+        "email": { "type": "string", "maxLength": 255 },
+        "departmentId": { "type": "string", "maxLength": 128 },
+        "course": { "type": "string", "maxLength": 100 },
+        "currentSemester": { "type": "number" },
+        "academicYear": { "type": "string", "maxLength": 50 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "dob": { "type": "string", "maxLength": 30 },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["studentId", "registerNumber", "name", "departmentId", "course", "currentSemester", "academicYear"]
+    },
+    "Faculty": {
+      "title": "Faculty",
+      "description": "Faculty member and assigned teaching courses",
+      "type": "object",
+      "properties": {
+        "facultyId": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 150 },
+        "email": { "type": "string", "maxLength": 255 },
+        "departmentId": { "type": "string", "maxLength": 128 },
+        "designation": { "type": "string", "maxLength": 100 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "assignedSubjectIds": { "type": "array" },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["facultyId", "name", "email", "departmentId", "designation"]
+    },
+    "Department": {
+      "title": "Department",
+      "description": "Academic department in the institution",
+      "type": "object",
+      "properties": {
+        "departmentId": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 150 },
+        "code": { "type": "string", "maxLength": 30 },
+        "description": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["departmentId", "name", "code"]
+    },
+    "Subject": {
+      "title": "Subject",
+      "description": "Curriculum course / subject details",
+      "type": "object",
+      "properties": {
+        "subjectId": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 150 },
+        "code": { "type": "string", "maxLength": 30 },
+        "departmentId": { "type": "string", "maxLength": 128 },
+        "semester": { "type": "number" },
+        "credits": { "type": "number" },
+        "maxInternalMarks": { "type": "number" },
+        "maxExternalMarks": { "type": "number" },
+        "minPassMarks": { "type": "number" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["subjectId", "name", "code", "departmentId", "semester", "credits", "maxInternalMarks", "maxExternalMarks", "minPassMarks"]
+    },
+    "Semester": {
+      "title": "Semester",
+      "description": "Semester academic term configuration",
+      "type": "object",
+      "properties": {
+        "semesterId": { "type": "string", "maxLength": 128 },
+        "number": { "type": "number" },
+        "academicYear": { "type": "string", "maxLength": 50 },
+        "isCurrent": { "type": "boolean" }
+      },
+      "required": ["semesterId", "number", "academicYear"]
+    },
+    "Examination": {
+      "title": "Examination",
+      "description": "Examination session with publication status",
+      "type": "object",
+      "properties": {
+        "examinationId": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 150 },
+        "semesterId": { "type": "string", "maxLength": 128 },
+        "academicYear": { "type": "string", "maxLength": 50 },
+        "examDate": { "type": "string", "maxLength": 50 },
+        "isPublished": { "type": "boolean" },
+        "publishedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["examinationId", "title", "semesterId", "academicYear", "isPublished"]
+    },
+    "Mark": {
+      "title": "Mark",
+      "description": "Student subject mark record for an examination session",
+      "type": "object",
+      "properties": {
+        "markId": { "type": "string", "maxLength": 128 },
+        "studentId": { "type": "string", "maxLength": 128 },
+        "registerNumber": { "type": "string", "maxLength": 50 },
+        "subjectId": { "type": "string", "maxLength": 128 },
+        "subjectCode": { "type": "string", "maxLength": 30 },
+        "subjectName": { "type": "string", "maxLength": 150 },
+        "semester": { "type": "number" },
+        "examinationId": { "type": "string", "maxLength": 128 },
+        "internalMarks": { "type": "number" },
+        "externalMarks": { "type": "number" },
+        "totalMarks": { "type": "number" },
+        "maxMarks": { "type": "number" },
+        "percentage": { "type": "number" },
+        "grade": { "type": "string", "maxLength": 10 },
+        "gradePoint": { "type": "number" },
+        "isPassed": { "type": "boolean" },
+        "isAbsent": { "type": "boolean" },
+        "isWithheld": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["draft", "submitted", "approved"] },
+        "submittedByFacultyId": { "type": "string", "maxLength": 128 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["markId", "studentId", "subjectId", "examinationId", "totalMarks", "grade", "isPassed", "status"]
+    },
+    "GradingRule": {
+      "title": "GradingRule",
+      "description": "Configurable grade calculation boundary",
+      "type": "object",
+      "properties": {
+        "ruleId": { "type": "string", "maxLength": 128 },
+        "grade": { "type": "string", "maxLength": 10 },
+        "minPercentage": { "type": "number" },
+        "maxPercentage": { "type": "number" },
+        "gradePoint": { "type": "number" },
+        "description": { "type": "string", "maxLength": 100 }
+      },
+      "required": ["ruleId", "grade", "minPercentage", "maxPercentage", "gradePoint"]
+    },
+    "Setting": {
+      "title": "Setting",
+      "description": "Institutional configuration and college profile",
+      "type": "object",
+      "properties": {
+        "settingId": { "type": "string", "maxLength": 128 },
+        "collegeName": { "type": "string", "maxLength": 200 },
+        "collegeCode": { "type": "string", "maxLength": 50 },
+        "address": { "type": "string", "maxLength": 300 },
+        "affiliation": { "type": "string", "maxLength": 200 },
+        "defaultPassingPercentage": { "type": "number" }
+      },
+      "required": ["settingId", "collegeName"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User accounts and role metadata"
+    },
+    "/students/{studentId}": {
+      "schema": "Student",
+      "description": "Student demographic and enrollment records"
+    },
+    "/faculty/{facultyId}": {
+      "schema": "Faculty",
+      "description": "Faculty staff profiles and subject assignments"
+    },
+    "/departments/{departmentId}": {
+      "schema": "Department",
+      "description": "Academic department definitions"
+    },
+    "/subjects/{subjectId}": {
+      "schema": "Subject",
+      "description": "Course catalog and credit metrics"
+    },
+    "/semesters/{semesterId}": {
+      "schema": "Semester",
+      "description": "Academic terms and semesters"
+    },
+    "/examinations/{examinationId}": {
+      "schema": "Examination",
+      "description": "Examination sessions and publication toggle"
+    },
+    "/marks/{markId}": {
+      "schema": "Mark",
+      "description": "Evaluated marks for student subjects"
+    },
+    "/gradingRules/{ruleId}": {
+      "schema": "GradingRule",
+      "description": "Institutional grading policies"
+    },
+    "/settings/{settingId}": {
+      "schema": "Setting",
+      "description": "Global college configuration"
+    }
+  }
+}

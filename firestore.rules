@@ -1,0 +1,115 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global catch-all default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Common security functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'sathyachidambaram18@gmail.com' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+
+    function isFaculty() {
+      return isSignedIn() && (
+        isAdmin() ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'faculty')
+      );
+    }
+
+    function isStudent() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'student'
+      );
+    }
+
+    function currentStudentId() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.studentId;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow create: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow update: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // Students collection
+    match /students/{studentId} {
+      allow read: if isSignedIn() && (
+        isAdmin() ||
+        isFaculty() ||
+        (isStudent() && currentStudentId() == studentId)
+      );
+      allow write: if isAdmin();
+    }
+
+    // Faculty collection
+    match /faculty/{facultyId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Departments collection
+    match /departments/{departmentId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Subjects collection
+    match /subjects/{subjectId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Semesters collection
+    match /semesters/{semesterId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Examinations collection
+    match /examinations/{examinationId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Marks collection
+    match /marks/{markId} {
+      // Students can only view their own marks when results are published or if approved
+      allow read: if isSignedIn() && (
+        isAdmin() ||
+        isFaculty() ||
+        (isStudent() && resource.data.studentId == currentStudentId())
+      );
+      // Faculty can create and update marks if they are in draft or submitted status
+      allow create: if isFaculty();
+      allow update: if isFaculty() || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Grading Rules collection
+    match /gradingRules/{ruleId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Settings collection
+    match /settings/{settingId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+  }
+}

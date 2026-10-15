@@ -1,0 +1,6 @@
+{
+  "name": "Student Result Management System",
+  "description": "Comprehensive college student result management portal with role-based dashboards for admins, faculty, and students to manage marks, compute CGPA/grades, publish results, and generate official PDF marksheets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
